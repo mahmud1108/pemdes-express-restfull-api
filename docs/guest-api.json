@@ -1,0 +1,111 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Guest api",
+        "version": "1.0"
+    },
+    "servers": [{ "url": "https://localhost:8000" }],
+    "paths": {
+        "/api/check_receipts/{no_receipts}": {
+            "get": {
+                "description": "Guest check receipts",
+                "parameters": [
+                    {
+                        "name": "no_receipts",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get detail package",
+                        "content": {
+                            "applicaton/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "no_receipts": {
+                                                    "type": "string"
+                                                },
+                                                "receivers_name": {
+                                                    "type": "string"
+                                                },
+                                                "receivers_phone": {
+                                                    "type": "number"
+                                                },
+                                                "date_address": {
+                                                    "type": "string"
+                                                },
+                                                "current_bumdes": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "package not found",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "not found": {
+                                        "description": "Package not found",
+                                        "value": {
+                                            "errors": {
+                                                "message": [
+                                                    "package  not found"
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/check_cost/{bumdes_id}": {
+            "get": {
+                "description": "Get shipment cost",
+                "parameters": [
+                    {
+                        "name": "bumdes_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get detail shipment",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "total_cost": {
+                                                    "type": "number"
+                                                },
+                                                "bumdes_destination": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
