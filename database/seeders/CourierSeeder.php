@@ -21,7 +21,8 @@ class CourierSeeder extends Seeder
             'address' => 'test',
             'photo' => 'test',
             'email' => 'test',
-            'password' => 'test'
+            'password' => 'test',
+            'token' => 'kurir',
         ]);
     }
 }

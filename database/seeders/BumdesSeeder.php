@@ -23,6 +23,7 @@ class BumdesSeeder extends Seeder
             'email' => 'test',
             'password' => 'test',
             'village_id' => $village->village_id,
+            'token' => 'bumdes'
         ]);
     }
 }
