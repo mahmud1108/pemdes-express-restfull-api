@@ -7,6 +7,7 @@ use App\Models\Village;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use Nette\Utils\Random;
 
 class BumdesSeeder extends Seeder
 {
@@ -16,14 +17,17 @@ class BumdesSeeder extends Seeder
     public function run(): void
     {
         $village = Village::query()->limit(1)->first();
-        Bumdes::create([
-            'bumdes_id' => 'B' . Str::random(4),
-            'bumdes_name' => 'desa test',
-            'bumdes_phone' => '123123123',
-            'email' => 'test',
-            'password' => 'test',
-            'village_id' => $village->village_id,
-            'token' => 'bumdes'
-        ]);
+
+        for ($i = 0; $i < 20; $i++) {
+            Bumdes::create([
+                'bumdes_id' => 'Bumdes_' . Random::generate(charlist: '0-9'),
+                'bumdes_name' => 'desa test',
+                'bumdes_phone' => '123123123' . $i,
+                'email' => 'test@gmail.com' . $i,
+                'password' => 'test',
+                'village_id' => $village->village_id,
+                'token' => 'bumdes' . $i
+            ]);
+        }
     }
 }

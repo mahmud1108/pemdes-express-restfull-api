@@ -6,8 +6,11 @@ use App\Helper\FileHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Courier\CourierCreateRequest;
 use App\Http\Requests\Courier\CourierUpdateRequest;
+use App\Http\Resources\Courier\ShipmentCollection;
+use App\Http\Resources\Courier\ShipmentCourierResource;
 use App\Http\Resources\CourierResource;
 use App\Models\Courier;
+use App\Models\Shipment;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -36,7 +39,14 @@ class CourierController extends Controller
     public function create(CourierCreateRequest $request)
     {
         $courier = new Courier;
-        $courier->courier_id = 'KU_' . Random::generate(10, '0-9');
+        $courier_id =  'KU_' . Random::generate(10, '0-9');
+        $cek = Courier::where('courier_id', $courier_id)->count();
+
+        do {
+            $courier_id =  'KU_' . Random::generate(10, '0-9');
+        } while ($cek > 0);
+
+        $courier->courier_id = $courier_id;
         $courier->courier_name = $request->courier_name;
         $courier->courier_phone = $request->courier_phone;
         $courier->photo = FileHelper::instance()->upload($request->photo, 'courier');
@@ -60,7 +70,7 @@ class CourierController extends Controller
         ])->setStatusCode(200);
     }
 
-    public function search($courier_id)
+    public function detail($courier_id)
     {
         $courier = $this->get_courier($courier_id);
 
@@ -99,5 +109,18 @@ class CourierController extends Controller
         $courier->save();
 
         return new CourierResource($courier);
+    }
+
+    public function list($courier_id, Request $request)
+    {
+        $courier = $this->get_courier($courier_id);
+        $shipment = Shipment::query()->where('courier_id', $courier->courier_id);
+
+        $per_page = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+
+        $shipment = $shipment->paginate(perPage: $per_page, page: $page);
+
+        return new ShipmentCollection($shipment);
     }
 }

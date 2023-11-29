@@ -14,4 +14,9 @@ class Courier extends Model
     protected $primaryKey = 'courier_id';
 
     public $incrementing = false;
+
+    public function shipment()
+    {
+        $this->hasMany(Shipment::class, 'courier_id', 'courier_id');
+    }
 }

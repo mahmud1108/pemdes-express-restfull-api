@@ -25,11 +25,11 @@ class CourierCreateRequest extends FormRequest
     {
         return [
             'courier_name' => ['required'],
-            'courier_phone' => ['required'],
+            'courier_phone' => ['required', 'unique:couriers'],
             'address' => ['required'],
             'photo' => ['required', 'file', 'mimes:jpg,png,jpeg'],
-            'email' => ['email', 'required'],
-            'password' => ['required', 'min:5']
+            'email' => ['email', 'required', 'unique:couriers'],
+            'password' => ['required', 'min:5', 'confirmed']
         ];
     }
 

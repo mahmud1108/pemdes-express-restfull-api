@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('village_id');
             $table->foreign('village_id')->on('villages')->references('village_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('token', 30)->unique();
+            $table->string('token', 30)->unique()->nullable();
             $table->timestamps();
         });
     }

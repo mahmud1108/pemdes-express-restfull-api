@@ -25,7 +25,7 @@ class AdminUpdateRequest extends FormRequest
     {
         return [
             'name' => ['min:4', 'max:50'],
-            'password' => ['min:4'],
+            'password' => ['min:4', 'confirmed'],
             'email' => ['email', 'min:10'],
             'photo' => ['file', 'mimes:jpg,png,jpeg'],
         ];

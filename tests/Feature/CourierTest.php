@@ -30,11 +30,38 @@ class CourierTest extends TestCase
             'address' => 'required',
             'photo' => UploadedFile::fake()->create('file.jpg', 1024),
             'email' => 'email@gmail.com',
-            'password' => 'required'
+            'password' => 'required',
+            'password_confirmation' => 'required'
         ], [
             'Authorization' => 'admin'
         ])->assertStatus(201)
             ->json();
+    }
+
+    public function testCreateErrorUnique()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $this->post(
+            '/api/admin/courier',
+            [
+                'courier_name' => 'required',
+                'courier_phone' => 'required',
+                'address' => 'required',
+                'photo' => UploadedFile::fake()->create('file.jpg', 1024),
+                'email' => 'test@gmail.com',
+                'password' => 'required'
+            ],
+            [
+                'Authorization' => 'admin'
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'email' => [
+                        'The email has already been taken.'
+                    ]
+                ]
+            ]);
     }
 
     public function testCreateErrorValidation()
@@ -93,7 +120,7 @@ class CourierTest extends TestCase
             ]);
     }
 
-    public function testCurierSearch()
+    public function testCurierDetail()
     {
         $this->seed(DatabaseSeeder::class);
         $courier = Courier::query()->limit(1)->first();
@@ -162,5 +189,65 @@ class CourierTest extends TestCase
                     ]
                 ]
             ]);
+    }
+
+    public function testUpdateEmailErrorUnique()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::query()->limit(1)->first();
+
+        $this->patch(
+            'api/admin/courier/' . $courier->courier_id,
+            [
+                'email' => 'test@gmail.com'
+            ],
+            [
+                'Authorization' => 'admin'
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'email' => [
+                        'The email has already been taken.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testUpdatePhoneErrorUnique()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::query()->limit(1)->first();
+
+        $this->patch(
+            'api/admin/courier/' . $courier->courier_id,
+            [
+                'courier_phone' => 'test'
+            ],
+            [
+                'Authorization' => 'admin'
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'courier_phone' => [
+                        'The courier phone has already been taken.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testCourierShipementList()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::query()->limit(1)->first();
+
+        $result = $this->get('/api/admin/courier/list/' . $courier->courier_id, [
+            'Authorization' => 'admin'
+        ])->assertStatus(200)
+            ->json();
+
+        self::assertEquals(20, $result['meta']['total']);
+        self::assertEquals(10, count($result['data']));
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BumdesController;
 use App\Http\Controllers\Admin\CourierController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\GuestController;
@@ -30,6 +31,16 @@ Route::middleware(AdminMiddleware::class)->group(function () {
 
     Route::post('/admin/courier', [CourierController::class, 'create']);
     Route::delete('/admin/courier/{courier_id}', [CourierController::class, 'delete']);
-    Route::get('/admin/courier/{courier_id}', [CourierController::class, 'search']);
+    Route::get('/admin/courier/{courier_id}', [CourierController::class, 'detail']);
+    Route::get('/admin/courier/list/{courier_id}', [CourierController::class, 'list']);
     Route::patch('/admin/courier/{courier_id}', [CourierController::class, 'update']);
+
+    Route::post('/admin/bumdes', [BumdesController::class, 'create']);
+    Route::get('/admin/bumdes', [BumdesController::class, 'get_all']);
+    Route::get('/admin/bumdes/search', [BumdesController::class, 'search']);
+    Route::get('/admin/bumdes/{bumdes_id}', [BumdesController::class, 'detail']);
+    Route::get('/admin/bumdes/destination/{bumdes_id}', [BumdesController::class, 'shipment_destination']);
+    Route::get('/admin/bumdes/current/{bumdes_id}', [BumdesController::class, 'current_bumdes']);
+    Route::delete('/admin/bumdes/{bumdes_id}', [BumdesController::class, 'delete']);
+    Route::patch('/admin/bumdes/{bumdes_id}', [BumdesController::class, 'update']);
 });

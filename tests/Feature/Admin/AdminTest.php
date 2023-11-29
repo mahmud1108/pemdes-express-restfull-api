@@ -76,7 +76,8 @@ class AdminTest extends TestCase
         $this->patch(
             '/api/admin/update',
             [
-                'password' => 'ganti'
+                'password' => 'ganti',
+                'password_confirmation' => 'ganti'
             ],
             [
                 'Authorization' => 'admin'
