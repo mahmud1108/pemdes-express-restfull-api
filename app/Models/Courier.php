@@ -11,5 +11,7 @@ class Courier extends Model
 
     protected $guarded = 'courier_id';
 
-    // protected $primaryKey = 'courier_id';
+    protected $primaryKey = 'courier_id';
+
+    public $incrementing = false;
 }
