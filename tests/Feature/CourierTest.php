@@ -103,7 +103,7 @@ class CourierTest extends TestCase
         ])->assertStatus(200);
     }
 
-    public function testCourierUpdate()
+    public function testCourierUpdateNameSuccess()
     {
         $this->seed(DatabaseSeeder::class);
         $courier = Courier::query()->limit(1)->first();
@@ -120,5 +120,47 @@ class CourierTest extends TestCase
         $new = Courier::query()->limit(1)->first();
 
         self::assertNotEquals($courier->courier_name, $new->courier_name);
+    }
+
+    public function testCourierUpdatePhotoSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::query()->limit(1)->first();
+
+        $this->patch(
+            '/api/admin/courier/' . $courier->courier_id,
+            [
+                'photo' => UploadedFile::fake()->create('asdfasdf.jpg', 1234)
+            ],
+            [
+                'Authorization' => 'admin'
+            ]
+        )->assertStatus(200);
+        $new = Courier::query()->limit(1)->first();
+
+        self::assertNotEquals($courier->photo, $new->photo);
+    }
+
+    public function testUpdatePhotoErrorValidation()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::query()->limit(1)->first();
+
+        $this->patch(
+            'api/admin/courier/' . $courier->courier_id,
+            [
+                'photo' => UploadedFile::fake()->create('asdf.pdf', 123)
+            ],
+            [
+                'Authorization' => 'admin'
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'photo' => [
+                        'The photo field must be a file of type: jpg, png, jpeg.'
+                    ]
+                ]
+            ]);
     }
 }
