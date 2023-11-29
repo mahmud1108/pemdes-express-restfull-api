@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Courier;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class CourierSeeder extends Seeder
@@ -19,7 +19,7 @@ class CourierSeeder extends Seeder
             'courier_name' => 'test',
             'courier_phone' => 'test',
             'address' => 'test',
-            'photo' => 'test',
+            'photo' => UploadedFile::fake()->create('asdf.jpg', 1240),
             'email' => 'test',
             'password' => 'test',
             'token' => 'kurir',

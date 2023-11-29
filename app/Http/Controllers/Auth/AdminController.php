@@ -45,7 +45,6 @@ class AdminController extends Controller
     {
         $data = $request->validated();
         $admin = Admin::find(auth()->user()->id);
-
         if (isset($data['name'])) {
             $admin->name = $data['name'];
         }
@@ -60,9 +59,9 @@ class AdminController extends Controller
 
         if (isset($data['photo'])) {
             if ($admin->photo != null) {
-                FileHelper::instance()->delete($admin->photo);
+                $admin->photo =   FileHelper::instance()->delete($admin->photo);
             }
-            FileHelper::instance()->upload($data['photo'], 'admin');
+            $admin->photo = FileHelper::instance()->upload($data['photo'], 'admin');
         }
 
         $admin->update();

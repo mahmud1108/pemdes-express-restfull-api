@@ -4,6 +4,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Admin;
 use Database\Seeders\AdminSeeder;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class AdminTest extends TestCase
@@ -93,6 +94,26 @@ class AdminTest extends TestCase
 
         self::assertNotEquals($new->password, $old->password);
     }
+
+    public function testUpdatePhoto()
+    {
+        $this->seed(AdminSeeder::class);
+        $old = Admin::where('name', 'test')->first();
+
+        $this->patch(
+            '/api/admin/update',
+            [
+                'photo' => UploadedFile::fake()->create('file.jpg', 1024)
+            ],
+            [
+                'Authorization' => 'admin'
+            ]
+        )->assertStatus(200)->json();
+        $new = Admin::where('name', 'test')->first();
+
+        self::assertNotEquals($new->photo, $old->photo);
+    }
+
 
     public function testUpdateErrorValidationi()
     {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CourierController;
 use App\Http\Controllers\Auth\AdminController;
 use App\Http\Controllers\GuestController;
 use App\Http\Middleware\AdminMiddleware;
@@ -26,4 +27,9 @@ Route::middleware(AdminMiddleware::class)->group(function () {
     Route::patch('/admin/update', [AdminController::class, 'update']);
     Route::get('/admin/current', [AdminController::class, 'current']);
     Route::delete('/admin/logout', [AdminController::class, 'logout']);
+
+    Route::post('/admin/courier', [CourierController::class, 'create']);
+    Route::delete('/admin/courier/{courier_id}', [CourierController::class, 'delete']);
+    Route::get('/admin/courier/{courier_id}', [CourierController::class, 'search']);
+    Route::patch('/admin/courier/{courier_id}', [CourierController::class, 'update']);
 });

@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('couriers', function (Blueprint $table) {
-            $table->uuid('courier_id')->primary();
+            $table->uuid('courier_id')->primary()->unique();
             $table->string('courier_name', 50);
             $table->string('courier_phone', 20);
             $table->text('address');
             $table->string('photo');
             $table->string('email', 50);
             $table->string('password');
-            $table->string('token', 30)->unique();
+            $table->string('token')->unique()->nullable();
             $table->timestamps();
         });
     }

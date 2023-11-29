@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Courier extends Model
 {
     use HasFactory;
+
+    protected $guarded = 'courier_id';
+
+    // protected $primaryKey = 'courier_id';
 }
