@@ -8,9 +8,11 @@ use App\Http\Requests\Courier\CourierCreateRequest;
 use App\Http\Requests\Courier\CourierUpdateRequest;
 use App\Http\Resources\Courier\ShipmentCollection;
 use App\Http\Resources\Courier\ShipmentCourierResource;
+use App\Http\Resources\CourierCollection;
 use App\Http\Resources\CourierResource;
 use App\Models\Courier;
 use App\Models\Shipment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -122,5 +124,15 @@ class CourierController extends Controller
         $shipment = $shipment->paginate(perPage: $per_page, page: $page);
 
         return new ShipmentCollection($shipment);
+    }
+
+    public function search(Request $request)
+    {
+        $per_page = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+        $courier = Courier::query()->where('courier_name', 'like', '%' . $request->input('name') . '%');
+        $courier = $courier->paginate(perPage: $per_page, page: $page);
+
+        return new CourierCollection($courier);
     }
 }

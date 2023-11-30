@@ -10,6 +10,8 @@ class Shipment extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = 'no_receipts';
+
     protected $primaryKey = 'no_receipts';
 
     public $incrementing = false;

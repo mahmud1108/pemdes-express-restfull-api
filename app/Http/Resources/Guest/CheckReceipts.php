@@ -16,10 +16,12 @@ class CheckReceipts extends JsonResource
     {
         return [
             'no_receipts' => $this->no_receipts,
-            'receivers_name' => $this->rreceivers_name,
+            'receivers_name' => $this->receivers_name,
             'receivers_phone' => $this->receivers_phone,
             'date_address' => $this->date_address,
-            'current_bumdes' => $this->current_bumdes
+            'current_bumdes' => $this->current_bumdes,
+            'acknowledgment' => $this->whenNotNull($this->acknowledgment),
+            'delivery_status' => $this->delivery_status
         ];
     }
 }

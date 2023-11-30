@@ -12,9 +12,9 @@ class GuestController extends Controller
 {
     public function check_receipts($no_receipts)
     {
-        $receipts = Shipment::where('no_receipts', $no_receipts)->first();
+        $shipment = Shipment::where('no_receipts', $no_receipts)->first();
 
-        if (!$receipts) {
+        if (!$shipment) {
             throw new HttpResponseException(response([
                 'errors' => [
                     'message' => [
@@ -24,7 +24,7 @@ class GuestController extends Controller
             ], 404));
         }
 
-        return (new CheckReceipts($receipts))->response()->setStatusCode(200);
+        return (new CheckReceipts($shipment))->response()->setStatusCode(200);
     }
 
     public function check_cost($village_id, Request $request)

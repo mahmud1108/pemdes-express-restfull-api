@@ -22,16 +22,17 @@ class ShipmentCourierResource extends JsonResource
                 'senders_address' => $this->senders_address,
                 'item_name' => $this->item_name,
                 'weight' => $this->weight,
+                'total_cost' => $this->total_cost,
                 'destination_address' => $this->destination_address,
                 'receivers_name' => $this->receivers_name,
                 'receivers_phone' => $this->receivers_phone,
                 'delivery_status' => $this->delivery_status,
                 'payment_status' => $this->payment_status,
-                'bumdes_destination' => $this->bumdes_destination,
+                'village_destination' => $this->village_destination,
                 'current_bumdes' => $this->current_bumdes,
                 'date_address' => $this->date_address,
                 'courier_id' => $this->courier_id,
-                'acknowledgment' => $this->acknowledgment,
+                'acknowledgment' => $this->whenNotNull($this->acknowledgment),
             ]
         ];
     }

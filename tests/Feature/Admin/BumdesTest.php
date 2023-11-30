@@ -197,20 +197,6 @@ class BumdesTest extends TestCase
         self::assertNotEquals($new->password, $bumdes->password);
     }
 
-    public function testBumdesDestination()
-    {
-        $this->seed(DatabaseSeeder::class);
-        $bumdes = Bumdes::query()->limit(1)->first();
-
-        $result = $this->get('/api/admin/bumdes/destination/' . $bumdes->bumdes_id, [
-            'Authorization' => 'admin'
-        ])->assertStatus(200)
-            ->json();
-
-        self::assertEquals(20, $result['meta']['total']);
-        self::assertEquals(10, count($result['data']));
-    }
-
     public function testBumdesGetAll()
     {
         $this->seed(DatabaseSeeder::class);

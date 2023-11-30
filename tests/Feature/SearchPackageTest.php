@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Shipment;
 use App\Models\Village;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 use function PHPSTORM_META\map;
@@ -80,5 +81,24 @@ class SearchPackageTest extends TestCase
                     'Not found'
                 ]
             ]);
+    }
+
+    public function testCompleteShipment()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $shipment = Shipment::query()->limit(1)->first();
+
+        $this->patch('/api/admin/shipment/delivery_status/' . $shipment->no_receipts, [
+            'delivery_status' => 'diterima',
+            'acknowledgment' => UploadedFile::fake()->create('adsfasdf.jpg', 123)
+        ], [
+            'Authorization' => 'admin'
+        ])->assertStatus(200)->json();
+
+        $result = $this->get('/api/check_receipts/' . $shipment->no_receipts)
+            ->assertStatus(200)->json();
+
+        self::assertNotNull($result['data']['acknowledgment']);
+        self::assertEquals('diterima', $result['data']['delivery_status']);
     }
 }

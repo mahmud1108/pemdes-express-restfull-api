@@ -250,4 +250,15 @@ class CourierTest extends TestCase
         self::assertEquals(20, $result['meta']['total']);
         self::assertEquals(10, count($result['data']));
     }
+
+    public function testSearchSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $result = $this->get('/api/admin/courier?name=test', headers: [
+            'Authorization' => 'admin'
+        ])->assertStatus(200)->json();
+
+        self::assertEquals(3, count($result['data']));
+    }
 }
