@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Helper\FileHelper;
 use App\Models\Courier;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class CourierSeeder extends Seeder
@@ -19,9 +21,9 @@ class CourierSeeder extends Seeder
             'courier_name' => 'test',
             'courier_phone' => 'test',
             'address' => 'test',
-            'photo' => UploadedFile::fake()->create('asdf.jpg', 1240),
-            'email' => 'test@gmail.com',
-            'password' => 'test',
+            'photo' => FileHelper::instance()->upload(UploadedFile::fake()->create('asdf.jpg', 1240), 'courier'),
+            'email' => 'courier@gmail.com',
+            'password' => Hash::make('courier'),
             'token' => 'kurir',
         ]);
 
@@ -31,9 +33,9 @@ class CourierSeeder extends Seeder
                 'courier_name' => 'test',
                 'courier_phone' => 'test',
                 'address' => 'test',
-                'photo' => UploadedFile::fake()->create('asdf.jpg', 1240),
+                'photo' => FileHelper::instance()->upload(UploadedFile::fake()->create('asdf.jpg', 1240), 'courier'),
                 'email' => 'test@gmail.com',
-                'password' => 'test',
+                'password' => Hash::make('test'),
                 'token' => 'kurir' . $i,
             ]);
         }

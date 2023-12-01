@@ -2,17 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Http\Resources\CourierResource;
-use App\Models\Admin;
 use App\Models\Courier;
-use Database\Seeders\AdminSeeder;
-use Database\Seeders\CourierSeeder;
+use App\Models\Shipment;
 use Database\Seeders\DatabaseSeeder;
-use GuzzleHttp\Psr7\Query;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Queue\Jobs\DatabaseJob;
 use Tests\TestCase;
 
 class CourierTest extends TestCase
@@ -247,7 +240,7 @@ class CourierTest extends TestCase
         ])->assertStatus(200)
             ->json();
 
-        self::assertEquals(20, $result['meta']['total']);
+        self::assertEquals(10, $result['meta']['total']);
         self::assertEquals(10, count($result['data']));
     }
 
@@ -260,5 +253,164 @@ class CourierTest extends TestCase
         ])->assertStatus(200)->json();
 
         self::assertEquals(3, count($result['data']));
+    }
+
+    public function testCourierLoginSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::where('email', 'courier@gmail.com')->first();
+
+        $this->post('/api/courier', [
+            'email' => 'courier@gmail.com',
+            'password' => 'courier'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'courier_name' => 'test',
+                    'courier_phone' => 'test',
+                    'address' => 'test',
+                    'photo' => $courier->photo,
+                    'email' => 'courier@gmail.com'
+                ]
+            ]);
+    }
+
+    public function testCourierLoginWrongPassword()
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $this->post('/api/courier', [
+            'email' => 'asdf@gmail.com',
+            'password' => 'asdfasdf'
+        ])->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'email or password wrong'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testCourierUpdateAuthNameSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::where('email', 'courier@gmail.com')->first();
+
+        $this->patch(
+            '/api/courier/',
+            [
+                'courier_name' => 'asdfasdfasdf'
+            ],
+            [
+                'Authorization' => 'kurir'
+            ]
+        )->assertStatus(200);
+        $new = Courier::where('email', 'courier@gmail.com')->first();
+
+        self::assertNotEquals($courier->courier_name, $new->courier_name);
+    }
+
+    public function testCourierUpdateAuthPhotoSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $courier = Courier::where('email', 'courier@gmail.com')->first();
+
+        $this->patch(
+            '/api/courier/',
+            [
+                'photo' => UploadedFile::fake()->create('asdfasdf.jpg')
+            ],
+            [
+                'Authorization' => 'kurir'
+            ]
+        )->assertStatus(200);
+        $new = Courier::where('email', 'courier@gmail.com')->first();
+
+        self::assertNotEquals($courier->photo, $new->photo);
+    }
+
+    public function testGetAuthShipment()
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $result = $this->get('/api/courier/shipment', headers: [
+            'Authorization' => 'kurir'
+        ])->assertStatus(200)->json();
+
+        self::assertEquals(10, $result['meta']['total']);
+        self::assertEquals(10, count($result['data']));
+    }
+
+    public function testUpdateAuthShipment()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $shipment = Shipment::where('courier_id', 1)->first();
+
+        $this->post('/api/courier/shipment/' . $shipment->no_receipts, [
+            'delivery_status' => 'diterima',
+            'acknowledgment' => UploadedFile::fake()->create('asdfasdf.jpg')
+        ], [
+            'Authorization' => 'kurir'
+        ])->assertStatus(200);
+    }
+
+    public function testUpdateAuthShipmentNotFound()
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $this->post('/api/courier/shipment/0', [
+            'delivery_status' => 'diterima',
+            'acknowledgment' => UploadedFile::fake()->create('asdfasdf.jpg')
+        ], [
+            'Authorization' => 'kurir'
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Not found'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testUpdateAuthShipmentUnauthorizedNotFound()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $shipment  = Shipment::where('courier_id', '!=', 1)->first();
+
+        $this->post('/api/courier/shipment/' . $shipment->no_receipts, [
+            'delivery_status' => 'diterima',
+            'acknowledgment' => UploadedFile::fake()->create('asdfasdf.jpg')
+        ], [
+            'Authorization' => 'kurir'
+        ])->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Not found'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testUpdateAuthShipmentUnauthorized()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $shipment = Shipment::where('courier_id', 1)->first();
+
+        $this->post('/api/courier/shipment/' . $shipment->no_receipts, [
+            'delivery_status' => 'diterima',
+            'acknowledgment' => UploadedFile::fake()->create('asdfasdf.jpg')
+        ], [
+            'Authorization' => 'kurir11'
+        ])->assertStatus(401)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'Unauthorized'
+                    ]
+                ]
+            ]);
     }
 }

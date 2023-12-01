@@ -81,10 +81,14 @@ class ShipmentController extends Controller
         return new ShipmentCourierResource($shipment);
     }
 
-    public function edit_delivery_status($no_receipts, EditDeliveryStatusRequest $request)
+    public function edit($no_receipts, EditDeliveryStatusRequest $request)
     {
         $shipment = $this->get_shipment($no_receipts);
         $data = $request->validated();
+
+        if (isset($data['payment_status'])) {
+            $shipment->payment_status = $data['payment_status'];
+        }
 
         $shipment->delivery_status = $data['delivery_status'];
         $shipment->acknowledgment = FileHelper::instance()->upload($data['acknowledgment'], 'acknowledgment');

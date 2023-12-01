@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Courier;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Auth;
 
-class EditDeliveryStatusRequest extends FormRequest
+class CourierLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
     /**
@@ -25,9 +24,8 @@ class EditDeliveryStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_status' => ['in:telah dibayar,belum dibayar'],
-            'delivery_status' => ['required', 'in:diproses,dalam pengiriman,diterima'],
-            'acknowledgment' => ['required', 'mimes:jpg,jpeg,png']
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ];
     }
 

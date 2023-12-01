@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.2",
     "info": {
-        "title": "Guest api",
+        "title": "Admin API",
         "version": "1.0"
     },
     "servers": [{ "url": "https://localhost:8000" }],
@@ -121,6 +121,115 @@
                     }
                 }
             }
-        }
+        },
+        "/api/admin": {
+            "patch": {
+                "description": "Update profil admin",
+                "responses": {
+                    "200": {
+                        "description": "Success update",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "photo": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "nullable": false
+                        }
+                    }
+                ]
+            },
+            "get": {
+                "description": "Get current admin user",
+                "responses": {
+                    "200": {
+                        "description": "Success get current user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "photo": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Logout admin",
+                "responses": {
+                    "200": {
+                        "description": "Success logout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admin/courier": {}
     }
 }

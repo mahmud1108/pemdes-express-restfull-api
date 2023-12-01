@@ -16,7 +16,7 @@ class AdminTest extends TestCase
     {
         $this->seed(AdminSeeder::class);
         $this->post(
-            '/api/admin/login',
+            '/api/admin',
             [
                 'email' => 'test@gmail.com',
                 'password' => 'admin'
@@ -34,7 +34,7 @@ class AdminTest extends TestCase
     {
         $this->seed(AdminSeeder::class);
         $this->post(
-            '/api/admin/login',
+            '/api/admin',
             [
                 'email' => 'salahemail@gmail.com',
                 'password' => 'admin'
@@ -53,7 +53,7 @@ class AdminTest extends TestCase
     {
         $this->seed(AdminSeeder::class);
         $this->post(
-            '/api/admin/login',
+            '/api/admin',
             [
                 'email' => 'asdfasdf',
                 'password' => 'admin'
@@ -72,12 +72,11 @@ class AdminTest extends TestCase
     {
         $this->seed(AdminSeeder::class);
 
-        $old = Admin::where('name', 'test')->first();
+        $old = Admin::where('token', 'admin')->first();
         $this->patch(
-            '/api/admin/update',
+            '/api/admin',
             [
-                'password' => 'ganti',
-                'password_confirmation' => 'ganti'
+                'name' => 'admin',
             ],
             [
                 'Authorization' => 'admin'
@@ -86,14 +85,14 @@ class AdminTest extends TestCase
             ->assertJson(
                 [
                     'data' => [
-                        'name' => 'test',
+                        'name' => 'admin',
                         'email' => 'test@gmail.com'
                     ]
                 ]
             );
-        $new = Admin::where('name', 'test')->first();
+        $new = Admin::where('token', 'admin')->first();
 
-        self::assertNotEquals($new->password, $old->password);
+        self::assertNotEquals($new->name, $old->name);
     }
 
     public function testUpdatePhoto()
@@ -102,7 +101,7 @@ class AdminTest extends TestCase
         $old = Admin::where('name', 'test')->first();
 
         $this->patch(
-            '/api/admin/update',
+            '/api/admin',
             [
                 'photo' => UploadedFile::fake()->create('file.jpg', 1024)
             ],
@@ -120,7 +119,7 @@ class AdminTest extends TestCase
     {
         $this->seed(AdminSeeder::class);
 
-        $this->patch('/api/admin/update', [
+        $this->patch('/api/admin', [
             'email' => 'asdasddddddddf'
         ], [
             'Authorization' => 'admin'
@@ -137,7 +136,7 @@ class AdminTest extends TestCase
     public function testLogoutSuccess()
     {
         $this->seed(AdminSeeder::class);
-        $this->delete('/api/admin/logout', headers: [
+        $this->delete('/api/admin', headers: [
             'Authorization' => 'admin'
         ])->assertStatus(200)
             ->assertJson([
@@ -149,7 +148,7 @@ class AdminTest extends TestCase
     {
         $this->seed(AdminSeeder::class);
 
-        $this->get('/api/admin/current', [
+        $this->get('/api/admin', [
             'Authorization' => 'admin'
         ])->assertStatus(200)
             ->assertJson([
@@ -164,7 +163,7 @@ class AdminTest extends TestCase
     {
         $this->seed(AdminSeeder::class);
 
-        $this->get('/api/admin/current', [
+        $this->get('/api/admin', [
             'Authorization' => 'token salah'
         ])->assertStatus(401)
             ->assertJson([

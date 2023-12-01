@@ -44,7 +44,7 @@ class AdminController extends Controller
     public function update(AdminUpdateRequest $request)
     {
         $data = $request->validated();
-        $admin = Admin::find(auth()->user()->id);
+        $admin = Admin::where('id', auth()->user()->id)->first();
         if (isset($data['name'])) {
             $admin->name = $data['name'];
         }
@@ -64,7 +64,7 @@ class AdminController extends Controller
             $admin->photo = FileHelper::instance()->upload($data['photo'], 'admin');
         }
 
-        $admin->update();
+        $admin->save();
         return new AdminResource($admin);
     }
 

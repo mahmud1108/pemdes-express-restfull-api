@@ -156,7 +156,7 @@ class ShipmentTest extends TestCase
         self::assertEquals(10, count($result['data']));
     }
 
-    public function testUpdateDeliveryStatus()
+    public function testUpdateDeliveryStatusSuccess()
     {
         $this->seed(DatabaseSeeder::class);
         $shipment = Shipment::query()->limit(1)->first();
@@ -167,6 +167,20 @@ class ShipmentTest extends TestCase
             'Authorization' => 'admin'
         ])->assertStatus(200)->json();
     }
+
+    public function testUpdateDeliveryStatusAndPaymentStatusSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $shipment = Shipment::query()->limit(1)->first();
+        $this->patch('/api/admin/shipment/delivery_status/' . $shipment->no_receipts, [
+            'delivery_status' => 'diterima',
+            'payment_status' => 'belum dibayar',
+            'acknowledgment' => UploadedFile::fake()->create('asdfasdf.jpg'),
+        ], [
+            'Authorization' => 'admin'
+        ])->assertStatus(200)->json();
+    }
+
 
     public function testUpdateDeliveryStatusFailed()
     {
