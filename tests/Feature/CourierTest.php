@@ -31,6 +31,22 @@ class CourierTest extends TestCase
             ->json();
     }
 
+    public function testRegisterSuccess()
+    {
+        $this->post('/api/courier/register', [
+            'courier_name' => 'required',
+            'courier_phone' => 'required',
+            'address' => 'required',
+            'photo' => UploadedFile::fake()->create('file.jpg', 1024),
+            'email' => 'email@gmail.com',
+            'password' => 'required',
+            'password_confirmation' => 'required'
+        ], [
+            'Authorization' => 'admin'
+        ])->assertStatus(201)
+            ->json();
+    }
+
     public function testCreateErrorUnique()
     {
         $this->seed(DatabaseSeeder::class);

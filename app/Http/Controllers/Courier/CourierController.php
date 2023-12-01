@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Courier;
 
 use App\Helper\FileHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Courier\CourierCreateRequest;
 use App\Http\Requests\Courier\CourierLoginRequest;
+use App\Http\Requests\Courier\CourierRegisterRequest;
 use App\Http\Requests\Courier\CourierUpdateRequest;
 use App\Http\Requests\EditDeliveryStatusRequest;
 use App\Http\Resources\Courier\ShipmentCollection;
@@ -16,6 +18,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Nette\Utils\Random;
 
 class CourierController extends Controller
 {
@@ -108,5 +111,27 @@ class CourierController extends Controller
         $shipment->save();
 
         return new ShipmentCourierResource($shipment);
+    }
+
+    public function register(CourierRegisterRequest $request)
+    {
+        $courier = new Courier;
+        $courier_id =  'KU_' . Random::generate(10, '0-9');
+        $cek = Courier::where('courier_id', $courier_id)->count();
+
+        do {
+            $courier_id =  'KU_' . Random::generate(10, '0-9');
+        } while ($cek > 0);
+
+        $courier->courier_id = $courier_id;
+        $courier->courier_name = $request->courier_name;
+        $courier->courier_phone = $request->courier_phone;
+        $courier->photo = FileHelper::instance()->upload($request->photo, 'courier');
+        $courier->password = Hash::make($request->password);
+        $courier->address = $request->address;
+        $courier->email = $request->email;
+        $courier->save();
+
+        return (new CourierResource($courier))->response()->setStatusCode(201);
     }
 }

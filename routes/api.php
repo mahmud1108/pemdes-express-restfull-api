@@ -27,6 +27,7 @@ Route::get('/check_cost/{village_id}', [GuestController::class, 'check_cost']);
 
 Route::post('/admin', [AdminController::class, 'login']);
 Route::post('/courier', [CourierCourierController::class, 'login']);
+Route::post('/courier/register', [CourierCourierController::class, 'register']);
 
 Route::middleware(AdminMiddleware::class)->prefix('/admin')->group(function () {
     Route::patch('/', [AdminController::class, 'update']);
