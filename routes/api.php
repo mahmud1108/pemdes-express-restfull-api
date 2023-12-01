@@ -4,9 +4,11 @@ use App\Http\Controllers\Admin\BumdesController;
 use App\Http\Controllers\Admin\CourierController;
 use App\Http\Controllers\Admin\ShipmentController;
 use App\Http\Controllers\Auth\AdminController;
+use App\Http\Controllers\Bumdes\BumdesController as BumdesBumdesController;
 use App\Http\Controllers\Courier\CourierController as CourierCourierController;
 use App\Http\Controllers\GuestController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\BumdesMiddleware;
 use App\Http\Middleware\CourierMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -60,4 +62,13 @@ Route::middleware(CourierMiddleware::class)->prefix('courier')->group(function (
     Route::patch('/', [CourierCourierController::class, 'update']);
     Route::get('/shipment', [CourierCourierController::class, 'get_all_shipment']);
     Route::post('/shipment/{no_receipts}', [CourierCourierController::class, 'update_shipment']);
+    Route::delete('/logout', [CourierCourierController::class, 'logout']);
+});
+
+Route::middleware(BumdesMiddleware::class)->prefix('bumdes')->group(function () {
+    Route::patch('/', [BumdesBumdesController::class, 'update']);
+    Route::get('/shipment', [BumdesBumdesController::class, 'shipment']);
+    Route::patch('/shipment/{no_receipts}', [BumdesBumdesController::class, 'update_current_bumdes']);
+    Route::get('/shipment/{no_receipts}', [BumdesBumdesController::class, 'detail']);
+    Route::delete('/logout', [BumdesBumdesController::class, 'logout']);
 });

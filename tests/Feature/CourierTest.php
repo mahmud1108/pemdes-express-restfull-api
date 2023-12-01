@@ -429,4 +429,15 @@ class CourierTest extends TestCase
                 ]
             ]);
     }
+
+    public function testLogoutCourier()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $this->delete('/api/courier/logout', headers: [
+            'Authorization' => 'kurir'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => true
+            ]);
+    }
 }

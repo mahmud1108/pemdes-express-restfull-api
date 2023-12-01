@@ -134,4 +134,16 @@ class CourierController extends Controller
 
         return (new CourierResource($courier))->response()->setStatusCode(201);
     }
+
+    public function logout()
+    {
+        $courier = Courier::find(auth()->user()->courier_id);
+
+        $courier->token = null;
+        $courier->save();
+
+        return response()->json([
+            'data' => true
+        ])->setStatusCode(200);
+    }
 }

@@ -18,9 +18,9 @@ class BumdesSeeder extends Seeder
     {
         $village = Village::query()->limit(1)->first();
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 19; $i++) {
             Bumdes::create([
-                'bumdes_id' => 'Bumdes_' . Random::generate(charlist: '0-9'),
+                'bumdes_id' => 'Bumdes_' . $i,
                 'bumdes_name' => 'desa test',
                 'bumdes_phone' => '123123123' . $i,
                 'email' => 'test@gmail.com' . $i,
@@ -29,5 +29,15 @@ class BumdesSeeder extends Seeder
                 'token' => 'bumdes' . $i
             ]);
         }
+
+        Bumdes::create([
+            'bumdes_id' => 1,
+            'bumdes_name' => 'desa test',
+            'bumdes_phone' => '123123123',
+            'email' => 'test@gmail.com',
+            'password' => 'test',
+            'village_id' => $village->village_id,
+            'token' => 'bumdes'
+        ]);
     }
 }

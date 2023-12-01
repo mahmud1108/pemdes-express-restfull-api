@@ -21,7 +21,7 @@ class ShipmentSeeder extends Seeder
     {
         $now = Carbon::now();
         $now = $now->format('Y-m-d H:i:s');
-        $bumdes = Bumdes::query()->limit(1)->first();
+        $bumdes = Bumdes::where('bumdes_id', 'Bumdes_0')->first();
         $courier = Courier::query()->limit(1)->first();
         $courier_a = Courier::where('courier_id', '!=', 1)->first();
         $village = Village::query()->limit(1)->first();

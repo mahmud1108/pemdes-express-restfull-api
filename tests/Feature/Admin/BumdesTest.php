@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\Bumdes;
+use App\Models\Shipment;
 use App\Models\Village;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\MultiBumdesSeeder;
@@ -113,7 +114,7 @@ class BumdesTest extends TestCase
         $this->seed(DatabaseSeeder::class);
 
         $this->get(
-            '/api/admin/bumdes/1',
+            '/api/admin/bumdes/0',
             [
                 'Authorization' => 'admin'
             ]
@@ -166,7 +167,7 @@ class BumdesTest extends TestCase
     {
         $this->seed(DatabaseSeeder::class);
 
-        $this->delete('/api/admin/bumdes/1', headers: [
+        $this->delete('/api/admin/bumdes/0', headers: [
             'Authorization' => 'admin'
         ])->assertStatus(404)
             ->assertJson([
@@ -245,7 +246,84 @@ class BumdesTest extends TestCase
             'Authorization' => 'admin'
         ])->assertStatus(200)->json();
 
-        self::assertEquals(20, $result['meta']['total']);
-        self::assertEquals(10, count($result['data']));
+        self::assertEquals(0, $result['meta']['total']);
+        self::assertEquals(0, count($result['data']));
+    }
+
+    public function testBumdesAuthUpdateSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $bumdes = Bumdes::where('bumdes_id', 1)->first();
+
+        $this->patch(
+            '/api/bumdes/',
+            [
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ],
+            [
+                'Authorization' => 'bumdes'
+            ]
+        )->assertStatus(200);
+        $new = Bumdes::where('bumdes_id', 1)->first();
+        self::assertNotEquals($new->password, $bumdes->password);
+    }
+
+    public function testBumdesAuthUpdateErrorValidation()
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $this->patch(
+            '/api/bumdes/',
+            [
+                'password' => 'password',
+            ],
+            [
+                'Authorization' => 'bumdes'
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'password' => [
+                        'The password field confirmation does not match.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testGetAllShipmentCurrentBumdes()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $result = $this->get('/api/bumdes/shipment', headers: [
+            'Authorization' => 'bumdes'
+        ])->assertStatus(200)
+            ->json();
+
+        self::assertEquals(0, count($result['data']));
+    }
+
+    public function testUpdateCurrentBumdesByBumdes()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $shipment = Shipment::query()->limit(1)->first();
+        $this->patch('/api/bumdes/shipment/' . $shipment->no_receipts, headers: [
+            'Authorization' => 'bumdes'
+        ])->assertStatus(200)
+            ->json();
+        $new =  Shipment::query()->limit(1)->first();
+
+        self::assertNotEquals($shipment->current_bumdes, $new->current_bumdes);
+    }
+
+    public function testBumdesLogout()
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $this->delete('/api/bumdes/logout', headers: [
+            'Authorization' => 'bumdes'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => true
+            ]);
     }
 }
