@@ -55,7 +55,7 @@ Route::middleware(AdminMiddleware::class)->prefix('/admin')->group(function () {
     Route::post('/shipment', [ShipmentController::class, 'create']);
     Route::get('/shipment', [ShipmentController::class, 'get_all_shipment']);
     Route::get('/shipment/get', [ShipmentController::class, 'get_by_delivery_status']);
-    Route::delete('/shipment{no_receipts}', [ShipmentController::class, 'delete']);
+    Route::delete('/shipment/{no_receipts}', [ShipmentController::class, 'delete']);
 });
 
 Route::middleware(CourierMiddleware::class)->prefix('courier')->group(function () {

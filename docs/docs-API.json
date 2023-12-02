@@ -1,0 +1,2055 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Pemdes Express Restfull API",
+        "description": "Restfull API for Pemdes Express",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/{environment}",
+            "variables": {
+                "environment": {
+                    "description": "Server environment",
+                    "default": "admin",
+                    "enum": ["admin", "courier", "pemdes"]
+                }
+            }
+        }
+    ],
+    "paths": {
+        "/": {
+            "post": {
+                "summary": "Login admin",
+                "description": "Login admin",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "admin": {
+                                    "description": "Login default admin",
+                                    "value": {
+                                        "email": "test@gmail.com",
+                                        "password": "test"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success login admin",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "test": {
+                                        "description": "Success login",
+                                        "value": {
+                                            "name": "test",
+                                            "email": "test@gmail.com"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Failed login",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "errors": {
+                                        "description": "Failed login",
+                                        "value": {
+                                            "errors": {
+                                                "message": "email or password wrong"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [{ "AdminAuth": [] }],
+                "summary": "Update owns profil admin",
+                "description": "Update owns profil admin",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        " multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "photo": {
+                                        "type": "string",
+                                        "contentMediaType": "png/jpg/jpeg"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "test": {
+                                    "description": "update test",
+                                    "value": {
+                                        "name": "admin",
+                                        "password": "admin_password",
+                                        "password_confirmation": "admin_password",
+                                        "email": "admin@gmail.com",
+                                        "photo": "photo.jpg"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success update admin",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "photo": {
+                                            "type": "string"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "format": "hash"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "test": {
+                                        "description": "update test",
+                                        "value": {
+                                            "name": "admin",
+                                            "password": "admin_password",
+                                            "password_confirmation": "admin_password",
+                                            "email": "admin@gmail.com",
+                                            "photo": "public/storage/oq2398ahsdfwe98.jpg"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Get data from current login admin",
+                "summary": "Get current admin ",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get data current admin login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "photo": {
+                                            "type": "string"
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "test": {
+                                        "description": "get data",
+                                        "value": {
+                                            "name": "admin",
+                                            "email": "admin@gmail.com",
+                                            "photo": "public/storage/asdfasdfawerzkc.jpg",
+                                            "token": "asdfasdfadfoiqwe9-qwekjbdjk"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete token current admin login",
+                "summary": "Delete token current admin login",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success delete token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courier": {
+            "post": {
+                "description": "Create courier account",
+                "summary": "Create courier account",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "courier_name": {
+                                        "type": "string"
+                                    },
+                                    "courier_phone": {
+                                        "type": "string",
+                                        "uniqueItems": true,
+                                        "maxLength": 20
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "photo": {
+                                        "type": "string",
+                                        "contentMediaType": "png/jpg/jpeg"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 5
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 5
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "admin": {
+                                    "description": "Login default admin",
+                                    "value": {
+                                        "courier_name": "ini nama",
+                                        "courier_phone": "0856111122223333",
+                                        "address": "wonosobo, jawa tengah",
+                                        "photo": "asdfasdf.jpg",
+                                        "email": "test@gmail.com",
+                                        "password": "kurir",
+                                        "password_confirmation": "kurir"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Success create courier account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "courier_name": {
+                                            "type": "string"
+                                        },
+                                        "courier_phone": {
+                                            "type": "string",
+                                            "uniqueItems": true,
+                                            "maxLength": 20
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "photo": {
+                                            "type": "string",
+                                            "contentMediaType": "png/jpg/jpeg"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "password": {
+                                            "type": "string",
+                                            "format": "password",
+                                            "minLength": 5
+                                        },
+                                        "password_confirmation": {
+                                            "type": "string",
+                                            "format": "password",
+                                            "minLength": 5
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "test": {
+                                        "description": "Success create courier account",
+                                        "value": {
+                                            "courier_name": "ini nama",
+                                            "courier_phone": "0856111122223333",
+                                            "address": "wonosobo, jawa tengah",
+                                            "photo": "asdfasdf.jpg",
+                                            "email": "test@gmail.com",
+                                            "password": "kurir",
+                                            "password_confirmation": "kurir"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Search Courier by name",
+                "summary": "Search courier by name",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "Authrization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "default": 10,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "default": 1,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success search/ name found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "courier_name": {
+                                            "type": "string"
+                                        },
+                                        "courier_phone": {
+                                            "type": "string",
+                                            "uniqueItems": true,
+                                            "maxLength": 20
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "photo": {
+                                            "type": "string",
+                                            "contentMediaType": "png/jpg/jpeg"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "password": {
+                                            "type": "string",
+                                            "format": "password",
+                                            "minLength": 5
+                                        },
+                                        "password_confirmation": {
+                                            "type": "string",
+                                            "format": "password",
+                                            "minLength": 5
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "description": "success get data",
+                                        "value": {
+                                            "data": [
+                                                {
+                                                    "courier_name": "test",
+                                                    "courier_phone": "test",
+                                                    "address": "test",
+                                                    "photo": "storage/courier/uxnZrQsqP5KjhRRTbhRK4M2Fcu5EOUhC1olXkOA9.jpg",
+                                                    "email": "courier@gmail.com"
+                                                },
+                                                {
+                                                    "courier_name": "test",
+                                                    "courier_phone": "test",
+                                                    "address": "test",
+                                                    "photo": "storage/courier/PoVCUO474FieotxToiz4JIGrz0DxI6cwG5L7lVNV.jpg",
+                                                    "email": "test@gmail.com"
+                                                },
+                                                {
+                                                    "courier_name": "test",
+                                                    "courier_phone": "test",
+                                                    "address": "test",
+                                                    "photo": "storage/courier/Qlb2OkezjkinXUOfni0bWrsDAVibSTctuX2G7ePB.jpg",
+                                                    "email": "test@gmail.com"
+                                                }
+                                            ],
+                                            "links": {
+                                                "first": "http://localhost/api/admin/courier?page=1",
+                                                "last": "http://localhost/api/admin/courier?page=1",
+                                                "prev": null,
+                                                "next": null
+                                            },
+                                            "meta": {
+                                                "current_page": 1,
+                                                "from": 1,
+                                                "last_page": 1,
+                                                "links": [
+                                                    {
+                                                        "url": null,
+                                                        "label": "&laquo; Previous",
+                                                        "active": false
+                                                    },
+                                                    {
+                                                        "url": "http://localhost/api/admin/courier?page=1",
+                                                        "label": "1",
+                                                        "active": true
+                                                    },
+                                                    {
+                                                        "url": null,
+                                                        "label": "Next &raquo;",
+                                                        "active": false
+                                                    }
+                                                ],
+                                                "path": "http://localhost/api/admin/courier",
+                                                "per_page": 10,
+                                                "to": 3,
+                                                "total": 3
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Success delete token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": {
+                                        "message": "Not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courier/{courier_id}": {
+            "delete": {
+                "description": "Delete courier by ID",
+                "summary": "Delete courier",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/courier_id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success delete token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Get detail courier",
+                "summary": "get detail courier",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "name": "courier_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success get courier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "courier_name": {
+                                            "type": "string"
+                                        },
+                                        "courier_phone": {
+                                            "type": "string",
+                                            "uniqueItems": true,
+                                            "maxLength": 20
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "photo": {
+                                            "type": "string",
+                                            "contentMediaType": "png/jpg/jpeg"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "courier_name": "ini nama",
+                                    "courier_phone": "0856111122223333",
+                                    "address": "wonosobo, jawa tengah",
+                                    "photo": "asdfasdf.jpg",
+                                    "email": "test@gmail.com"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "courier not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "errors": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": {
+                                        "message": "Not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update Courier by id",
+                "summary": "Update Courier by id",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/courier_id"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        " multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "courier_name": {
+                                        "type": "string"
+                                    },
+                                    "courier_phone": {
+                                        "type": "string",
+                                        "maxLength": 20
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "photo": {
+                                        "type": "string",
+                                        "contentMediaType": "png/jpg/jpeg"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "courier_name": "test name",
+                                "courier_phone": "085122223333",
+                                "address": "test address",
+                                "email": "admin@gmail.com",
+                                "photo": "photo.jpg",
+                                "password": "password",
+                                "password_confirmation": "password"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success update courier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "courier_name": {
+                                            "type": "string"
+                                        },
+                                        "courier_phone": {
+                                            "type": "string",
+                                            "maxLength": 20
+                                        },
+                                        "address": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "uniqueItems": true
+                                        },
+                                        "photo": {
+                                            "type": "string",
+                                            "contentMediaType": "png/jpg/jpeg"
+                                        }
+                                    },
+                                    "example": {
+                                        "courier_name": "test name",
+                                        "courier_phone": "085122223333",
+                                        "address": "test address",
+                                        "email": "admin@gmail.com",
+                                        "photo": "public/storage/asdfahsdfqwenklvwer8klasdf.jpg"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/courier/list/{courier_id}": {
+            "get": {
+                "description": "get all shipment by courier",
+                "summary": "get all shipment by courier",
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/courier_id"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success get all shipment by courier",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "no_receipts": {
+                                            "type": "string"
+                                        },
+                                        "senders_name": {
+                                            "type": "string"
+                                        },
+                                        "senders_phone": {
+                                            "type": "string"
+                                        },
+                                        "senders_address": {
+                                            "type": "string"
+                                        },
+                                        "item_name": {
+                                            "type": "string"
+                                        },
+                                        "weight": {
+                                            "type": "number"
+                                        },
+                                        "total_cost": {
+                                            "type": "number"
+                                        },
+                                        "destination_address": {
+                                            "type": "string"
+                                        },
+                                        "receivers_name": {
+                                            "type": "string"
+                                        },
+                                        "receivers_phone": {
+                                            "type": "string"
+                                        },
+                                        "delivery_status": {
+                                            "type": "string"
+                                        },
+                                        "payment_status": {
+                                            "type": "string"
+                                        },
+                                        "village_destination": {
+                                            "type": "string"
+                                        },
+                                        "current_bumdes": {
+                                            "type": "string"
+                                        },
+                                        "date_address": {
+                                            "type": "string"
+                                        },
+                                        "courier_id": {
+                                            "type": "string"
+                                        },
+                                        "acknowledgment": {
+                                            "type": "string",
+                                            "nullable": true,
+                                            "contentMediaType": "png/jpg/jpeg"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "no_receipts": "BX_0499458661",
+                                            "senders_name": "test name",
+                                            "senders_phone": "123123",
+                                            "senders_address": "test address",
+                                            "item_name": "test item",
+                                            "weight": "123",
+                                            "total_cost": "123123",
+                                            "destination_address": "test destination",
+                                            "receivers_name": "test revceivers",
+                                            "receivers_phone": "test",
+                                            "delivery_status": "diproses",
+                                            "payment_status": "telah dibayar",
+                                            "village_destination": "VSwPu",
+                                            "current_bumdes": "Bumdes_0",
+                                            "date_address": "2023-12-02 13:03:49",
+                                            "courier_id": "1"
+                                        }
+                                    ],
+                                    "links": {
+                                        "first": "http://localhost/api/admin/courier/list/{courieri_id}?page=1",
+                                        "last": "http://localhost/api/admin/courier/list/{courieri_id}?page=1",
+                                        "prev": null,
+                                        "next": null
+                                    },
+                                    "meta": {
+                                        "current_page": 1,
+                                        "from": 1,
+                                        "last_page": 1,
+                                        "links": [
+                                            {
+                                                "url": null,
+                                                "label": "&laquo; Previous",
+                                                "active": false
+                                            },
+                                            {
+                                                "url": "http://localhost/api/admin/courier/list/{courieri_id}?page=1",
+                                                "label": "1",
+                                                "active": true
+                                            },
+                                            {
+                                                "url": null,
+                                                "label": "Next &raquo;",
+                                                "active": false
+                                            }
+                                        ],
+                                        "path": "http://localhost/api/admin/courier/list/{courier_id}",
+                                        "per_page": 10,
+                                        "to": 1,
+                                        "total": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bumdes": {
+            "post": {
+                "description": "create bumdes account",
+                "summary": "create bumdes account",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/courier_id"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bumdes_name": {
+                                        "type": "string"
+                                    },
+                                    "bumdes_phone": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "village_id": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "bumdes_name": "test name",
+                                "bumdes_phone": "086544443333",
+                                "email": "test@gmail.com",
+                                "village_id": "test_village_id",
+                                "password": "password",
+                                "password_confirmation": "password"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "success create account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "bumdes_name": {
+                                            "type": "string"
+                                        },
+                                        "bumdes_phone": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "uniqueItems": true
+                                        },
+                                        "village_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "bumdes_name": "test name",
+                                        "bumdes_phone": "086544443333",
+                                        "email": "test@gmail.com",
+                                        "village_id": "test_village_id"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "get all bumdess",
+                "summary": "get all bumdes",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success get all bumdes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "bumdes_name": {
+                                            "type": "string"
+                                        },
+                                        "bumdes_phone": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "uniqueItems": true
+                                        },
+                                        "village_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "data": [
+                                            {
+                                                "bumdes_name": "bumdes_name",
+                                                "bumdes_phone": "bumdes_phone",
+                                                "email": "email",
+                                                "village_id": "village_id"
+                                            }
+                                        ],
+                                        "links": {
+                                            "first": "http://localhost/api/admin/bumdes?page=1",
+                                            "last": "http://localhost/api/admin/bumdes?page=1",
+                                            "prev": null,
+                                            "next": null
+                                        },
+                                        "meta": {
+                                            "current_page": 1,
+                                            "from": 1,
+                                            "last_page": 1,
+                                            "links": [
+                                                {
+                                                    "url": null,
+                                                    "label": "&laquo; Previous",
+                                                    "active": false
+                                                },
+                                                {
+                                                    "url": "http://localhost/api/admin/bumdes?page=1",
+                                                    "label": "1",
+                                                    "active": true
+                                                },
+                                                {
+                                                    "url": null,
+                                                    "label": "Next &raquo;",
+                                                    "active": false
+                                                }
+                                            ],
+                                            "path": "http://localhost/api/admin/bumdes",
+                                            "per_page": 10,
+                                            "to": 1,
+                                            "total": 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bumdes/{bumdes_id}": {
+            "get": {
+                "description": "get bumdes by id",
+                "summary": "get bumdes by id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/bumdes_id"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success get bumdes by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "bumdes_name": {
+                                            "type": "string"
+                                        },
+                                        "bumdes_phone": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "village_id": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "bumdes_name": "bumdes_name",
+                                    "bumdes_phone": "bumdes_phone",
+                                    "email": "email",
+                                    "village_id": "village_id"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed get not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": {
+                                        "message": "not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update bumdes by id",
+                "summary": "update bumdes by id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/bumdes_id"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "bumdes_name": {
+                                        "type": "string"
+                                    },
+                                    "bumdes_phone": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "bumdes_name": "bumdes_name",
+                                "bumdes_phone": "bumdes_phone",
+                                "email": "test@gmail.com",
+                                "password": "password",
+                                "password_confirmation": "password"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success update bumdes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "bumdes_name": {
+                                            "type": "string"
+                                        },
+                                        "bumdes_phone": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "uniqueItems": true
+                                        },
+                                        "password": {
+                                            "type": "string",
+                                            "format": "password"
+                                        },
+                                        "password_confirmation": {
+                                            "type": "string",
+                                            "format": "password"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "bumdes_name": "bumdes_name",
+                                    "bumdes_phone": "bumdes_phone",
+                                    "email": "test@gmail.com",
+                                    "password": "password",
+                                    "password_confirmation": "password"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed get not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": {
+                                        "message": "not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete bumdes by id",
+                "summary": "delete bumdes by id",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/bumdes_id"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success delete data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed get not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": {
+                                        "message": "not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bumdes/current/{bumdes_id}": {
+            "get": {
+                "description": "Get shipment in the bumdes by bumdes_id",
+                "summary": "get shipment in this bumdes",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/bumdes_id"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success get shipment in the bumdes by bumdes id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "no_receipts": {
+                                            "type": "string"
+                                        },
+                                        "senders_name": {
+                                            "type": "string"
+                                        },
+                                        "senders_phone": {
+                                            "type": "string"
+                                        },
+                                        "senders_address": {
+                                            "type": "string"
+                                        },
+                                        "item_name": {
+                                            "type": "string"
+                                        },
+                                        "weight": {
+                                            "type": "number"
+                                        },
+                                        "total_cost": {
+                                            "type": "number"
+                                        },
+                                        "destination_address": {
+                                            "type": "string"
+                                        },
+                                        "receivers_name": {
+                                            "type": "string"
+                                        },
+                                        "receivers_phone": {
+                                            "type": "string"
+                                        },
+                                        "delivery_status": {
+                                            "type": "string"
+                                        },
+                                        "payment_status": {
+                                            "type": "string"
+                                        },
+                                        "village_destination": {
+                                            "type": "string"
+                                        },
+                                        "current_bumdes": {
+                                            "type": "string"
+                                        },
+                                        "date_address": {
+                                            "type": "string"
+                                        },
+                                        "courier_id": {
+                                            "type": "string"
+                                        },
+                                        "acknowledgment": {
+                                            "type": "string",
+                                            "nullable": true,
+                                            "contentMediaType": "png/jpg/jpeg"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "no_receipts": "BX_0499458661",
+                                            "senders_name": "test name",
+                                            "senders_phone": "123123",
+                                            "senders_address": "test address",
+                                            "item_name": "test item",
+                                            "weight": "123",
+                                            "total_cost": "123123",
+                                            "destination_address": "test destination",
+                                            "receivers_name": "test revceivers",
+                                            "receivers_phone": "test",
+                                            "delivery_status": "diproses",
+                                            "payment_status": "telah dibayar",
+                                            "village_destination": "VSwPu",
+                                            "current_bumdes": "{bumdes_id}",
+                                            "date_address": "2023-12-02 13:03:49",
+                                            "courier_id": "1"
+                                        }
+                                    ],
+                                    "links": {
+                                        "first": "http://localhost/api/admin/bumdes/current/{bumdes_id}?page=1",
+                                        "last": "http://localhost/api/admin/bumdes/current/{bumdes_id}?page=1",
+                                        "prev": null,
+                                        "next": null
+                                    },
+                                    "meta": {
+                                        "current_page": 1,
+                                        "from": 1,
+                                        "last_page": 1,
+                                        "links": [
+                                            {
+                                                "url": null,
+                                                "label": "&laquo; Previous",
+                                                "active": false
+                                            },
+                                            {
+                                                "url": "http://localhost/api/admin/bumdes/current/{bumdes_id}?page=1",
+                                                "label": "1",
+                                                "active": true
+                                            },
+                                            {
+                                                "url": null,
+                                                "label": "Next &raquo;",
+                                                "active": false
+                                            }
+                                        ],
+                                        "path": "http://localhost/api/admin/bumdes/current/{bumdes_id}",
+                                        "per_page": 10,
+                                        "to": 1,
+                                        "total": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed get not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": {
+                                        "message": "not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/bumdes/search": {
+            "get": {
+                "description": "get bumdes search by name or bumdes id",
+                "summary": "Search bumdes",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "bumdes_id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success get all bumdes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "bumdes_name": {
+                                            "type": "string"
+                                        },
+                                        "bumdes_phone": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "uniqueItems": true
+                                        },
+                                        "village_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "example": {
+                                        "data": [
+                                            {
+                                                "bumdes_name": "bumdes_name",
+                                                "bumdes_phone": "bumdes_phone",
+                                                "email": "email",
+                                                "village_id": "village_id"
+                                            }
+                                        ],
+                                        "links": {
+                                            "first": "http://localhost/api/admin/bumdes?page=1",
+                                            "last": "http://localhost/api/admin/bumdes?page=1",
+                                            "prev": null,
+                                            "next": null
+                                        },
+                                        "meta": {
+                                            "current_page": 1,
+                                            "from": 1,
+                                            "last_page": 1,
+                                            "links": [
+                                                {
+                                                    "url": null,
+                                                    "label": "&laquo; Previous",
+                                                    "active": false
+                                                },
+                                                {
+                                                    "url": "http://localhost/api/admin/bumdes?page=1",
+                                                    "label": "1",
+                                                    "active": true
+                                                },
+                                                {
+                                                    "url": null,
+                                                    "label": "Next &raquo;",
+                                                    "active": false
+                                                }
+                                            ],
+                                            "path": "http://localhost/api/admin/bumdes",
+                                            "per_page": 10,
+                                            "to": 1,
+                                            "total": 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shipment": {
+            "post": {
+                "description": "create shipment",
+                "summary": "create shipment",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "no_receipts": {
+                                        "type": "string"
+                                    },
+                                    "senders_name": {
+                                        "type": "string"
+                                    },
+                                    "senders_phone": {
+                                        "type": "string"
+                                    },
+                                    "senders_address": {
+                                        "type": "string"
+                                    },
+                                    "item_name": {
+                                        "type": "string"
+                                    },
+                                    "weight": {
+                                        "type": "number"
+                                    },
+                                    "total_cost": {
+                                        "type": "number"
+                                    },
+                                    "destination_address": {
+                                        "type": "string"
+                                    },
+                                    "receivers_name": {
+                                        "type": "string"
+                                    },
+                                    "receivers_phone": {
+                                        "type": "string"
+                                    },
+                                    "delivery_status": {
+                                        "type": "string"
+                                    },
+                                    "payment_status": {
+                                        "type": "string"
+                                    },
+                                    "village_destination": {
+                                        "type": "string"
+                                    },
+                                    "current_bumdes": {
+                                        "type": "string"
+                                    },
+                                    "date_address": {
+                                        "type": "string"
+                                    },
+                                    "courier_id": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success create shipment",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "no_receipts": {
+                                            "type": "string"
+                                        },
+                                        "senders_name": {
+                                            "type": "string"
+                                        },
+                                        "senders_phone": {
+                                            "type": "string"
+                                        },
+                                        "senders_address": {
+                                            "type": "string"
+                                        },
+                                        "item_name": {
+                                            "type": "string"
+                                        },
+                                        "weight": {
+                                            "type": "number"
+                                        },
+                                        "total_cost": {
+                                            "type": "number"
+                                        },
+                                        "destination_address": {
+                                            "type": "string"
+                                        },
+                                        "receivers_name": {
+                                            "type": "string"
+                                        },
+                                        "receivers_phone": {
+                                            "type": "string"
+                                        },
+                                        "delivery_status": {
+                                            "type": "string"
+                                        },
+                                        "payment_status": {
+                                            "type": "string"
+                                        },
+                                        "village_destination": {
+                                            "type": "string"
+                                        },
+                                        "current_bumdes": {
+                                            "type": "string"
+                                        },
+                                        "date_address": {
+                                            "type": "string"
+                                        },
+                                        "courier_id": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "get all shipment",
+                "summary": "get all shipment",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success get all",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "no_receipts": {
+                                            "type": "string"
+                                        },
+                                        "senders_name": {
+                                            "type": "string"
+                                        },
+                                        "senders_phone": {
+                                            "type": "string"
+                                        },
+                                        "senders_address": {
+                                            "type": "string"
+                                        },
+                                        "item_name": {
+                                            "type": "string"
+                                        },
+                                        "weight": {
+                                            "type": "number"
+                                        },
+                                        "total_cost": {
+                                            "type": "number"
+                                        },
+                                        "destination_address": {
+                                            "type": "string"
+                                        },
+                                        "receivers_name": {
+                                            "type": "string"
+                                        },
+                                        "receivers_phone": {
+                                            "type": "string"
+                                        },
+                                        "delivery_status": {
+                                            "type": "string"
+                                        },
+                                        "payment_status": {
+                                            "type": "string"
+                                        },
+                                        "village_destination": {
+                                            "type": "string"
+                                        },
+                                        "current_bumdes": {
+                                            "type": "string"
+                                        },
+                                        "date_address": {
+                                            "type": "string"
+                                        },
+                                        "courier_id": {
+                                            "type": "string"
+                                        },
+                                        "acknowledgment": {
+                                            "type": "string",
+                                            "nullable": true
+                                        }
+                                    },
+                                    "example": {
+                                        "data": [
+                                            {
+                                                "no_receipts": "BX_0499458661",
+                                                "senders_name": "test name",
+                                                "senders_phone": "123123",
+                                                "senders_address": "test address",
+                                                "item_name": "test item",
+                                                "weight": "123",
+                                                "total_cost": "123123",
+                                                "destination_address": "test destination",
+                                                "receivers_name": "test revceivers",
+                                                "receivers_phone": "test",
+                                                "delivery_status": "diproses",
+                                                "payment_status": "telah dibayar",
+                                                "village_destination": "VSwPu",
+                                                "current_bumdes": "bumdes_id",
+                                                "date_address": "2023-12-02 13:03:49",
+                                                "courier_id": "1"
+                                            }
+                                        ],
+                                        "links": {
+                                            "first": "http://localhost/api/admin/shipment?page=1",
+                                            "last": "http://localhost/api/admin/shipment?page=1",
+                                            "prev": null,
+                                            "next": null
+                                        },
+                                        "meta": {
+                                            "current_page": 1,
+                                            "from": 1,
+                                            "last_page": 1,
+                                            "links": [
+                                                {
+                                                    "url": null,
+                                                    "label": "&laquo; Previous",
+                                                    "active": false
+                                                },
+                                                {
+                                                    "url": "http://localhost/api/admin/shipment?page=1",
+                                                    "label": "1",
+                                                    "active": true
+                                                },
+                                                {
+                                                    "url": null,
+                                                    "label": "Next &raquo;",
+                                                    "active": false
+                                                }
+                                            ],
+                                            "path": "http://localhost/api/admin/shipment",
+                                            "per_page": 10,
+                                            "to": 1,
+                                            "total": 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shipment/{no_receepits}": {
+            "delete": {
+                "description": "delete shipment by no receipts",
+                "summary": "delete shipment by no receipts",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/no_receepits"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success delete data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "data": true
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed get not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "errors": {
+                                        "message": "not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/shipment/delivery_status/{no_receipts}": {
+            "patch": {
+                "description": "update delivery status",
+                "summary": "update delivery status ",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Authorization"
+                    },
+                    {
+                        "$ref": "#/components/parameters/no_receepits"
+                    }
+                ],
+                "security": [
+                    {
+                        "AdminAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "delivery_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "diproses",
+                                            "dalam pengiriman",
+                                            "diterima"
+                                        ]
+                                    },
+                                    "acknowledgment": {
+                                        "type": "string",
+                                        "contentMediaType": "png/jpg/jpeg"
+                                    },
+                                    "payment_status": {
+                                        "type": "string",
+                                        "enum": ["dibayar", "belum dibayar"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success update",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "delivery_status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "diproses",
+                                                "dalam pengiriman",
+                                                "diterima"
+                                            ]
+                                        },
+                                        "acknowledgment": {
+                                            "type": "string",
+                                            "contentMediaType": "png/jpg/jpeg"
+                                        },
+                                        "payment_status": {
+                                            "type": "string",
+                                            "enum": ["dibayar", "belum dibayar"]
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "delivery_status": "diterima",
+                                    "payment_status": "dibayar",
+                                    "acknowledgment": "public/storage/asdeuiasdngwqe9ubav.jpg"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "AdminAuth": {
+                "description": "Token for admin",
+                "type": "apiKey",
+                "in": "header",
+                "name": "Authrization"
+            }
+        },
+        "parameters": {
+            "Authorization": {
+                "name": "Authorization",
+                "in": "header",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "courier_id": {
+                "name": "courier_id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "bumdes_id": {
+                "name": "bumdes_id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "no_receepits": {
+                "name": "no_receepits",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
