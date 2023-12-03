@@ -7,14 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api/{environment}",
-            "variables": {
-                "environment": {
-                    "description": "Server environment",
-                    "default": "admin",
-                    "enum": ["admin", "courier", "pemdes"]
-                }
-            }
+            "url": "http://localhost:8000/api/admin"
         }
     ],
     "paths": {
