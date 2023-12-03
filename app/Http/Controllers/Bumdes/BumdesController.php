@@ -4,16 +4,40 @@ namespace App\Http\Controllers\Bumdes;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bumdes\BumdesUpdateRequest;
+use App\Http\Requests\BumdesLoginRequest;
 use App\Http\Resources\BumdesRresource;
 use App\Http\Resources\Courier\ShipmentCollection;
 use App\Http\Resources\Courier\ShipmentCourierResource;
+use App\Models\Admin;
 use App\Models\Bumdes;
 use App\Models\Shipment;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class BumdesController extends Controller
 {
+    public function login(BumdesLoginRequest $request)
+    {
+        $data = $request->validated();
+        $bumdes = Bumdes::where('email', $data['email'])->first();
+        if (!$bumdes || !Hash::check($data['password'], $bumdes->password)) {
+            throw new HttpResponseException(response([
+                'errors' => [
+                    'message' => [
+                        'email or password wrong'
+                    ]
+                ]
+            ], 401));
+        }
+
+        $bumdes->token = Str::uuid()->toString();
+        $bumdes->save();
+
+        return new BumdesRresource($bumdes);
+    }
+
     public function update(BumdesUpdateRequest $request)
     {
         $data = $request->validated();

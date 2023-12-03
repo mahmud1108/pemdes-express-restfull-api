@@ -326,4 +326,39 @@ class BumdesTest extends TestCase
                 'data' => true
             ]);
     }
+
+    public function testBumdesLoginSuccess()
+    {
+        $this->seed(DatabaseSeeder::class);
+        $bumdes = Bumdes::where('email', 'test@gmail.com')->first();
+        $this->post('/api/bumdes/login', [
+            'email' => "test@gmail.com",
+            'password' => 'test'
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'bumdes_name' => $bumdes->bumdes_name,
+                    'bumdes_phone' => $bumdes->bumdes_phone,
+                    'email' => $bumdes->email,
+                    'village_id' => $bumdes->village_id
+                ]
+            ]);
+    }
+
+    public function testBumdesLoginFailed()
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $this->post('/api/bumdes/login', [
+            'email' => 'test@email.com',
+            'password' => 'password salah'
+        ])->assertStatus(401)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'email or password wrong'
+                    ]
+                ]
+            ]);
+    }
 }

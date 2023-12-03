@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/check_receipts/{no_receipts}', [GuestController::class, 'check_receipts']);
 Route::get('/check_cost/{village_id}', [GuestController::class, 'check_cost']);
 
+Route::post('/bumdes/login', [BumdesBumdesController::class, 'login']);
 Route::post('/admin', [AdminController::class, 'login']);
 Route::post('/courier', [CourierCourierController::class, 'login']);
 Route::post('/courier/register', [CourierCourierController::class, 'register']);

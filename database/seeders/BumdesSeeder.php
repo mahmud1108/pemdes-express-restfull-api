@@ -6,6 +6,7 @@ use App\Models\Bumdes;
 use App\Models\Village;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Nette\Utils\Random;
 
@@ -35,7 +36,7 @@ class BumdesSeeder extends Seeder
             'bumdes_name' => 'desa test',
             'bumdes_phone' => '123123123',
             'email' => 'test@gmail.com',
-            'password' => 'test',
+            'password' => Hash::make('test'),
             'village_id' => $village->village_id,
             'token' => 'bumdes'
         ]);

@@ -206,7 +206,7 @@ class ShipmentTest extends TestCase
         $this->seed(DatabaseSeeder::class);
         $shipment = Shipment::query()->limit(1)->first();
 
-        $this->delete('/api/admin/shipment' . $shipment->no_receipts, headers: [
+        $this->delete('/api/admin/shipment/' . $shipment->no_receipts, headers: [
             'Authorization' => 'admin'
         ])->assertStatus(200)
             ->assertJson([

@@ -4,6 +4,8 @@
         "title": "API Title",
         "version": "1.0"
     },
-    "servers": [{ "url": "https://api.server.test/v1" }],
-    "paths": {}
+    "servers": [{ "url": "http://localhost:8000/api/bumdes" }],
+    "paths": {
+        "/"
+    }
 }
